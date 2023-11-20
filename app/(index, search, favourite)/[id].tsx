@@ -55,7 +55,6 @@ export default function ArtScreen() {
               artist={{ title: data.artist_title, id: data.artist_id }}
               items={{
                 Place: data.place_of_origin,
-                "On view": data.on_loan_display,
                 Type: data.artwork_type_title,
                 Styles: data.style_titles?.join(", "),
                 Medium: data.medium_display,
