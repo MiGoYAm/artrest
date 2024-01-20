@@ -4,9 +4,8 @@ import ArtworksList from "../../components/ArtworksList";
 import useApiCollection from "../../hooks/useApiCollection";
 
 export default function ExploreScreen() {
-  const { data, fetchNextPage, isFetching } = useApiCollection("artworks", [
-    "explore",
-  ]);
+  const { data, refetch, fetchNextPage, isFetching, isRefetching } =
+    useApiCollection("artworks", ["explore"]);
 
   return (
     <>
@@ -15,6 +14,8 @@ export default function ExploreScreen() {
         data={data}
         onEndReached={fetchNextPage}
         fetchNextPage={isFetching}
+        refreshing={isRefetching}
+        onRefresh={refetch}
       />
     </>
   );

@@ -4,11 +4,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useContext } from "react";
-import { ArtContext } from "../../../components/ArtContext";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Image } from "expo-image";
+import { useAtomValue } from "jotai";
+import { imageUrlAtom } from "../../../components/ArtContext";
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
@@ -22,7 +22,7 @@ function clamp(value: number, scale: number, length: number) {
 
 export default function ImageScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { imageUrlRef } = useContext(ArtContext);
+  const imageUrl = useAtomValue(imageUrlAtom)
   const { width, height } = useWindowDimensions();
 
   const offset = useSharedValue({ x: 0, y: 0 });
@@ -102,7 +102,7 @@ export default function ImageScreen() {
           contentFit="contain"
           transition={150}
           source={{
-            uri: `${imageUrlRef.current}/${id}/full/843,/0/default.jpg`,
+            uri: `${imageUrl}/${id}/full/843,/0/default.jpg`,
             cacheKey: id,
           }}
         />

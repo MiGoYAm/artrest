@@ -15,6 +15,8 @@ import {
   onlineManager,
 } from "@tanstack/react-query";
 import NetInfo from "@react-native-community/netinfo";
+import { Provider } from "jotai";
+import { enableScreens } from "react-native-screens";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -51,43 +53,47 @@ function RootLayoutNav() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Tabs
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-            tabBarLabelStyle: { fontSize: 12 },
-          }}
+      <Provider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Tabs.Screen
-            name="(index)"
-            options={{
-              title: "Explore",
-              tabBarIcon: ({ color }) => (
-                <TabBarIcon name="explore" color={color} />
-              ),
+          <Tabs
+            screenOptions={{
+              headerShown: false,
+              tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+              tabBarLabelStyle: { fontSize: 12 },
             }}
-          />
-          <Tabs.Screen
-            name="(search)"
-            options={{
-              title: "Search",
-              tabBarIcon: ({ color }) => (
-                <TabBarIcon name="search" color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="(favourite)"
-            options={{
-              title: "Favourite",
-              tabBarIcon: ({ color }) => (
-                <TabBarIcon name="favorite" color={color} />
-              ),
-            }}
-          />
-        </Tabs>
-      </ThemeProvider>
+          >
+            <Tabs.Screen
+              name="(index)"
+              options={{
+                title: "Explore",
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="explore" color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="(search)"
+              options={{
+                title: "Search",
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="search" color={color} />
+                ),
+              }}
+            />
+            <Tabs.Screen
+              name="(favourite)"
+              options={{
+                title: "Favourite",
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="favorite" color={color} />
+                ),
+              }}
+            />
+          </Tabs>
+        </ThemeProvider>
+      </Provider>
     </QueryClientProvider>
   );
 }

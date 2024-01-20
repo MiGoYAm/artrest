@@ -1,12 +1,6 @@
-import { createContext } from "react";
 import { Artwork } from "../hooks/useApiCollection";
+import { atom } from "jotai";
 
-type ArtValue = {
-  art: Artwork | null;
-  setArt: React.Dispatch<React.SetStateAction<Artwork | null>>;
-  artist: string;
-  setArtist: React.Dispatch<React.SetStateAction<string>>;
-  imageUrlRef: React.MutableRefObject<string>;
-};
-
-export const ArtContext = createContext({} as ArtValue);
+export const imageUrlAtom = atom("https://www.artic.edu/iiif/2");
+export const lastArtAtom = atom<Artwork | null>(null);
+export const lastArtistAtom = atom<String>("");

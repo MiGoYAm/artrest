@@ -1,10 +1,11 @@
-import { useRouter, useSegments } from "expo-router";
+import { useRouter } from "expo-router";
 import { Text } from "./Themed";
 import { Pressable, StyleSheet, View, ViewProps } from "react-native";
-import { ArtContext } from "./ArtContext";
-import { useContext, useState } from "react";
+import { lastArtistAtom } from "./ArtContext";
+import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import useSegment from "../hooks/useSegment";
+import { useSetAtom } from "jotai";
 
 export default function Table({
   artist,
@@ -40,7 +41,7 @@ export function bulletize(text: string | undefined) {
 }
 
 function Artist(artist: { id: number; title: string }) {
-  const { setArtist } = useContext(ArtContext);
+  const setArtist = useSetAtom(lastArtistAtom);
   const segment = useSegment();
   const router = useRouter();
 

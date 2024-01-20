@@ -8,17 +8,15 @@ import { StyleSheet, View } from "react-native";
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
 
-  const { data, fetchNextPage, isFetching, isFetched } = useApiCollection(
-    `artworks/search?q=${query}`,
-    ["search", query]
-  );
+  const { data, refetch, fetchNextPage, isFetching, isFetched, isRefetching } =
+    useApiCollection(`artworks/search?q=${query}`, ["search", query]);
 
   return (
     <>
       <Stack.Screen
         options={{
           title: "Search",
-          headerTransparent: false,
+          //headerTransparent: false,
           headerSearchBarOptions: {
             onChangeText: (e) => setQuery(e.nativeEvent.text),
             hideWhenScrolling: false,
@@ -35,7 +33,8 @@ export default function SearchScreen() {
           data={data}
           onEndReached={fetchNextPage}
           fetchNextPage={isFetching}
-          contentInsetAdjustmentBehavior="automatic"
+          refreshing={isRefetching}
+          onRefresh={refetch}
         />
       )}
     </>

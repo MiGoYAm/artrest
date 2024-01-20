@@ -1,8 +1,7 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useContext } from "react";
 import { Text } from "../../components/Themed";
 import Image from "../../components/Image";
-import { ArtContext } from "../../components/ArtContext";
+import { lastArtAtom } from "../../components/ArtContext";
 import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { StyleSheet } from "react-native";
 import Table, { bulletize } from "../../components/Table";
@@ -12,20 +11,19 @@ import { Artwork } from "../../hooks/useApiCollection";
 import LoadingView from "../../components/Loading";
 import useSegment from "../../hooks/useSegment";
 import useApiQuery from "../../hooks/useApiQuery";
+import { useAtomValue } from "jotai";
 
 export default function ArtScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data, isFetching } = useApiQuery(
-    `artworks/${id}`,
-    ["art", id],
-    useContext(ArtContext).art
-  );
+
+  const art = useAtomValue(lastArtAtom);
+  const { data, isFetching } = useApiQuery(`artworks/${id}`, ["art", id], art);
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: data?.title ?? "",
+          title: data.title,
           headerBackTitleVisible: false,
           headerRight: () =>
             data ? <SaveButton id={id} art={data} /> : undefined,
@@ -38,7 +36,7 @@ export default function ArtScreen() {
           */
         }}
       />
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         {data ? <HeaderImage art={data} /> : undefined}
         <LoadingView loading={isFetching}>
           <View style={contentStyles.content}>

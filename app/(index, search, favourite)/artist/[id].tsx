@@ -4,18 +4,19 @@ import { contentStyles } from "../[id]";
 import Table from "../../../components/Table";
 import ArtworksList from "../../../components/ArtworksList";
 import useApiCollection from "../../../hooks/useApiCollection";
-import { ArtContext } from "../../../components/ArtContext";
-import { useContext } from "react";
+import { lastArtistAtom } from "../../../components/ArtContext";
 import LoadingView from "../../../components/Loading";
 import useApiQuery from "../../../hooks/useApiQuery";
+import { useAtomValue } from "jotai";
 
 export default function ArtistScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  
+
+  const artist = useAtomValue(lastArtistAtom);
   const { data, isFetching } = useApiQuery(
     `agents/${id}?fields=title,alt_titles,birth_date,death_date,description`,
     ["artist", id],
-    { title: useContext(ArtContext).artist }
+    { title: artist }
   );
 
   const arts = useApiCollection(

@@ -1,10 +1,10 @@
 import { MasonryFlashList, MasonryFlashListProps } from "@shopify/flash-list";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { Text } from "./Themed";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import Image from "./Image";
-import { ArtContext } from "./ArtContext";
+import { lastArtAtom } from "./ArtContext";
 import React from "react";
 import { useScrollToTop } from "@react-navigation/native";
 import { Artwork } from "../hooks/useApiCollection";
@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Loading from "./Loading";
 import useSegment from "../hooks/useSegment";
+import { useSetAtom } from "jotai";
 
 export type ArtworksListProps = {
   fetchNextPage?: boolean;
@@ -41,6 +42,7 @@ export default function ArtworksList({
       numColumns={2}
       ListFooterComponent={() => <Loading loading={fetchNextPage} />}
       onEndReachedThreshold={2}
+      contentInsetAdjustmentBehavior="automatic"
       ref={scrollRef}
       {...rest}
     />
@@ -48,7 +50,7 @@ export default function ArtworksList({
 }
 
 function Element({ item }: { item: Artwork }) {
-  const { setArt } = useContext(ArtContext);
+  const setArt = useSetAtom(lastArtAtom);
   const segment = useSegment();
   const router = useRouter();
 

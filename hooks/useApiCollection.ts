@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { API_URL, PAGINATION_PARAMS } from "../constants/Api";
-import { useContext } from "react";
-import { ArtContext } from "../components/ArtContext";
+import { useSetAtom } from "jotai";
+import { imageUrlAtom } from "../components/ArtContext";
 
 export type Dimensions = {
   height_cm: number | null;
@@ -36,30 +36,26 @@ export type Query<T> = {
 export default function useApiCollection(path: string, queryKey: string[]) {
   const char = path.includes("?") ? "&" : "?";
 
-  const { imageUrlRef } = useContext(ArtContext);
-  const queryFn = async ({ pageParam }: any): Promise<Query<Artwork[]>> => {
-    const response = await fetch(
-      `${API_URL}${path}${char}page=${pageParam}${PAGINATION_PARAMS}`
-    );
-    const data = await response.json();
-
-    if (data.config.iiif_url) {
-      imageUrlRef.current = data.config.iiif_url;
-    }
-    return data;
-  };
-
+  const setImageUrl = useSetAtom(imageUrlAtom)
   return useInfiniteQuery({
     queryKey,
-    queryFn,
+    queryFn: async ({ pageParam }: any): Promise<Query<Artwork[]>> => {
+      const response = await fetch(
+        `${API_URL}${path}${char}page=${pageParam}${PAGINATION_PARAMS}`
+      );
+      const data = await response.json();
+
+      if (data.config.iiif_url) {
+        setImageUrl(data.config.iiif_url)
+      }
+      return data;
+    },
     initialPageParam: 1,
     getNextPageParam: ({ pagination }) => {
       if (pagination.current_page < pagination.total_pages) {
         return pagination.current_page + 1;
       }
     },
-    select: (data) => {
-      return data.pages.flatMap((page) => page.data);
-    },
+    select: (data) => data.pages.flatMap((page) => page.data),
   });
 }

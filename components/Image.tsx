@@ -2,8 +2,9 @@ import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 import { Image as ExpoImage } from "expo-image";
 import { StyleSheet, View, Text, ColorValue, Platform } from "react-native";
 import { Artwork } from "../hooks/useApiCollection";
-import { useContext, useState } from "react";
-import { ArtContext } from "./ArtContext";
+import { useState } from "react";
+import { useAtomValue } from "jotai";
+import { imageUrlAtom } from "./ArtContext";
 
 type ItemProps = {
   item: Artwork;
@@ -14,7 +15,7 @@ export type ImageProps = ItemProps &
 
 export default function Image({ item, style, ...rest }: ImageProps) {
   const [errored, setErrored] = useState(false);
-  const { imageUrlRef } = useContext(ArtContext);
+  const imageUrl = useAtomValue(imageUrlAtom);
 
   if (!item.image_id) {
     return <Container icon="no-photography" message="No image" color="gray" />;
@@ -38,7 +39,7 @@ export default function Image({ item, style, ...rest }: ImageProps) {
         default: item.thumbnail.lqip,
       })} // bug on ios
       source={{
-        uri: `${imageUrlRef.current}/${item.image_id}/full/${width},/0/default.jpg`,
+        uri: `${imageUrl}/${item.image_id}/full/${width},/0/default.jpg`,
         cacheKey: item.image_id,
       }}
       onError={({ error }) => {
